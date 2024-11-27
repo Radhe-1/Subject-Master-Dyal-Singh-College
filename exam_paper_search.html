@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Paper Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #0074D9;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group button {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background-color: #0074D9;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #005bb5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        table th {
+            background-color: #0074D9;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Exam Paper Search</h1>
+    </header>
+    <div class="container">
+        <form id="searchForm">
+            <div class="form-group">
+                <label for="paperType">Select Paper Type:</label>
+                <select id="paperType" name="paperType">
+                    <option value="">-- Select --</option>
+                    <option value="Theory">Theory</option>
+                    <option value="Practical">Practical</option>
+                    <option value="Both">Both</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="searchTerm">Search by Course Title or UPC:</label>
+                <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter course title or code">
+            </div>
+            <div class="form-group">
+                <button type="button" onclick="searchPapers()">Search</button>
+            </div>
+        </form>
+
+        <table id="resultsTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>UPC</th>
+                    <th>Course Title</th>
+                    <th>Type</th>
+                    <th>Max Marks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const papers = [
+            { upc: '2012101101', title: 'ARABIC READING & WRITING FOR BEGINNERS', type: 'Theory', maxMarks: 160 },
+            { upc: '2016001025', title: 'INTRODUCTION TO ARABIC CALLIGRAPHY', type: 'Practical', maxMarks: 80 },
+            { upc: '2032181103', title: 'HISTORY OF THE MEDIA', type: 'Both', maxMarks: 160 },
+            // Add more entries here from your data file
+        ];
+
+        function searchPapers() {
+            const paperType = document.getElementById('paperType').value;
+            const searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+            const resultsTable = document.getElementById('resultsTable');
+            const resultsBody = resultsTable.querySelector('tbody');
+
+            resultsBody.innerHTML = '';
+
+            const filteredPapers = papers.filter(paper => {
+                const matchesType = !paperType || paper.type.toLowerCase() === paperType.toLowerCase();
+                const matchesSearch = !searchTerm || paper.title.toLowerCase().includes(searchTerm) || paper.upc.includes(searchTerm);
+                return matchesType && matchesSearch;
+            });
+
+            if (filteredPapers.length > 0) {
+                filteredPapers.forEach(paper => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${paper.upc}</td>
+                        <td>${paper.title}</td>
+                        <td>${paper.type}</td>
+                        <td>${paper.maxMarks}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+                resultsTable.style.display = 'table';
+            } else {
+                resultsTable.style.display = 'none';
+                alert('No results found.');
+            }
+        }
+    </script>
+</body>
+</html>
